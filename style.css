@@ -1,0 +1,21 @@
+:root {
+    --cell-size: 100px;
+}
+
+.playground {
+    display: grid;
+    grid-template-columns: repeat(3, var(--cell-size));
+    gap: 10px;
+}
+
+.cell {
+    width: var(--cell-size);
+    height: var(--cell-size);
+    border: 1px solid black;
+    border-radius: 10px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: var(--cell-size);
+    font-family: sans-serif;
+}
