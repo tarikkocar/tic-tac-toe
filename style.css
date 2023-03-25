@@ -1,5 +1,16 @@
 :root {
     --cell-size: 100px;
+    --bg-color: #f5f3e9;
+}
+
+body {
+    background-color: var(--bg-color);
+}
+
+.content {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
 }
 
 .playground {
@@ -11,11 +22,16 @@
 .cell {
     width: var(--cell-size);
     height: var(--cell-size);
-    border: 1px solid black;
+    border: 2px solid #85586F;
     border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 50px;
     font-family: sans-serif;
+    color: #0F6292;
+}
+
+button {
+    margin-top: 10px;
 }

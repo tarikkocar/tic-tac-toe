@@ -1,49 +1,28 @@
 const gameBoard = (() => {
   const cells = document.querySelectorAll(".cell");
-  let squares = [
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-    undefined,
-  ];
-  let turn = "X";
+  let squares = ["", "", "", "", "", "", "", "", ""];
 
-  function mark(e) {
-    if (turn === "X") {
-      squares[Array.from(cells).indexOf(e.target)] = "X";
-      renderGameBoard(squares);
-      if (checkWinner()) {
-        for (let i = 0; i < cells.length; i++) {
-          cells[i].removeEventListener("click", mark);
-        }
-      } else {
-        turn = "O";
-        e.target.removeEventListener("click", mark);
-      }
-    } else {
-      squares[Array.from(cells).indexOf(e.target)] = "O";
-      renderGameBoard(squares);
-      if (checkWinner()) {
-        for (let i = 0; i < cells.length; i++) {
-          cells[i].removeEventListener("click", mark);
-        }
-      } else {
-        turn = "X";
-        e.target.removeEventListener("click", mark);
-      }
-    }
+  function mark(index, symbol) {
+    squares[index] = symbol;
   }
 
-  function renderGameBoard(squares) {
-    for (let i = 0; i < squares.length; i++) {
-      if (squares[i] !== undefined && cells[i].innerHTML === "") {
-        let mark = document.createTextNode(`${squares[i]}`);
-        cells[i].appendChild(mark);
+  // function renderBoard() {
+  //   for (let i = 0; i < squares.length; i++) {
+  //     if (squares[i] !== "" && cells[i].innerHTML === "") {
+  //       let marked = document.createTextNode(`${squares[i]}`);
+  //       cells[i].appendChild(marked);
+  //     }
+  //   }
+  // }
+
+  function renderBoard() {
+    for (let i = 0; i < cells.length; i++) {
+      if (cells[i].hasChildNodes()) {
+        let newMark = document.createTextNode(`${squares[i]}`);
+        cells[i].replaceChild(newMark, cells[i].firstChild);
+      } else {
+        let marked = document.createTextNode(`${squares[i]}`);
+        cells[i].appendChild(marked);
       }
     }
   }
@@ -52,9 +31,9 @@ const gameBoard = (() => {
     // column check
     for (let i = 0; i < 3; i++) {
       if (
-        gameBoard.squares[i] !== undefined &&
-        gameBoard.squares[i] === gameBoard.squares[i + 3] &&
-        gameBoard.squares[i] === gameBoard.squares[i + 6]
+        squares[i] !== "" &&
+        squares[i] === squares[i + 3] &&
+        squares[i] === squares[i + 6]
       ) {
         return true;
       }
@@ -62,43 +41,79 @@ const gameBoard = (() => {
     // row check
     for (let i = 0; i < 7; i += 3) {
       if (
-        gameBoard.squares[i] !== undefined &&
-        gameBoard.squares[i] === gameBoard.squares[i + 1] &&
-        gameBoard.squares[i] === gameBoard.squares[i + 2]
+        squares[i] !== "" &&
+        squares[i] === squares[i + 1] &&
+        squares[i] === squares[i + 2]
       ) {
         return true;
       }
     }
     // diagonal checks
     if (
-      gameBoard.squares[0] !== undefined &&
-      gameBoard.squares[0] === gameBoard.squares[4] &&
-      gameBoard.squares[0] === gameBoard.squares[8]
+      squares[0] !== "" &&
+      squares[0] === squares[4] &&
+      squares[0] === squares[8]
     ) {
       return true;
     }
     if (
-      gameBoard.squares[2] !== undefined &&
-      gameBoard.squares[2] === gameBoard.squares[4] &&
-      gameBoard.squares[2] === gameBoard.squares[6]
+      squares[2] !== "" &&
+      squares[2] === squares[4] &&
+      squares[2] === squares[6]
     ) {
       return true;
     }
     return false;
   }
 
-  for (let i = 0; i < cells.length; i++) {
-    cells[i].addEventListener("click", mark);
+  function resetBoard() {
+    for (let i = 0; i < squares.length; i++) {
+      squares[i] = "";
+    }
+    renderBoard();
   }
 
-  return { squares, turn, mark };
+  return { cells, mark, renderBoard, checkWinner, resetBoard };
 })();
 
-// const player = (name, marker) => {
-//   return { name, marker };
-// };
+const gamePlay = ((gameBoard) => {
+  let turn = "X";
 
-const gamePlay = (() => {
-  // const player1 = player("Player 1", "X");
-  // const player2 = player("Player 2", "O");
-})();
+  function gameFlow(e) {
+    if (turn === "X") {
+      gameBoard.mark(Array.from(gameBoard.cells).indexOf(e.target), "X");
+      gameBoard.renderBoard();
+      if (gameBoard.checkWinner()) {
+        for (let i = 0; i < gameBoard.cells.length; i++) {
+          gameBoard.cells[i].removeEventListener("click", gameFlow);
+        }
+      } else {
+        turn = "O";
+        e.target.removeEventListener("click", gameFlow);
+      }
+    } else {
+      gameBoard.mark(Array.from(gameBoard.cells).indexOf(e.target), "O");
+      gameBoard.renderBoard();
+      if (gameBoard.checkWinner()) {
+        for (let i = 0; i < gameBoard.cells.length; i++) {
+          gameBoard.cells[i].removeEventListener("click", gameFlow);
+        }
+      } else {
+        turn = "X";
+        e.target.removeEventListener("click", gameFlow);
+      }
+    }
+  }
+
+  function addEventsToCells() {
+    for (let i = 0; i < gameBoard.cells.length; i++) {
+      gameBoard.cells[i].addEventListener("click", gameFlow);
+    }
+  }
+
+  addEventsToCells();
+
+  document.querySelector(".reset").addEventListener("click", () => {
+    gameBoard.resetBoard(), addEventsToCells();
+  });
+})(gameBoard);
