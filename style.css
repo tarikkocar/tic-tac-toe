@@ -16,6 +16,6 @@
     display: flex;
     justify-content: center;
     align-items: center;
-    font-size: var(--cell-size);
+    font-size: 50px;
     font-family: sans-serif;
 }
