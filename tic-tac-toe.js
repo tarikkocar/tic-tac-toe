@@ -6,15 +6,6 @@ const gameBoard = (() => {
     squares[index] = symbol;
   }
 
-  // function renderBoard() {
-  //   for (let i = 0; i < squares.length; i++) {
-  //     if (squares[i] !== "" && cells[i].innerHTML === "") {
-  //       let marked = document.createTextNode(`${squares[i]}`);
-  //       cells[i].appendChild(marked);
-  //     }
-  //   }
-  // }
-
   function renderBoard() {
     for (let i = 0; i < cells.length; i++) {
       if (cells[i].hasChildNodes()) {
@@ -28,6 +19,8 @@ const gameBoard = (() => {
   }
 
   function checkWinner() {
+    let isThereWinner = false;
+    let winner = undefined;
     // column check
     for (let i = 0; i < 3; i++) {
       if (
@@ -35,7 +28,8 @@ const gameBoard = (() => {
         squares[i] === squares[i + 3] &&
         squares[i] === squares[i + 6]
       ) {
-        return true;
+        isThereWinner = true;
+        winner = squares[i];
       }
     }
     // row check
@@ -45,7 +39,8 @@ const gameBoard = (() => {
         squares[i] === squares[i + 1] &&
         squares[i] === squares[i + 2]
       ) {
-        return true;
+        isThereWinner = true;
+        winner = squares[i];
       }
     }
     // diagonal checks
@@ -54,16 +49,18 @@ const gameBoard = (() => {
       squares[0] === squares[4] &&
       squares[0] === squares[8]
     ) {
-      return true;
+      isThereWinner = true;
+      winner = squares[0];
     }
     if (
       squares[2] !== "" &&
       squares[2] === squares[4] &&
       squares[2] === squares[6]
     ) {
-      return true;
+      isThereWinner = true;
+      winner = squares[2];
     }
-    return false;
+    return { isThereWinner, winner };
   }
 
   function resetBoard() {
@@ -73,35 +70,44 @@ const gameBoard = (() => {
     renderBoard();
   }
 
-  return { cells, mark, renderBoard, checkWinner, resetBoard };
+  function isGameOver() {
+    return !squares.includes("");
+  }
+
+  return { cells, mark, renderBoard, checkWinner, resetBoard, isGameOver };
 })();
 
+const player = (mark) => {
+  return { mark };
+};
+
 const gamePlay = ((gameBoard) => {
-  let turn = "X";
+  const result = document.querySelector(".result");
+  const player1 = player("X");
+  const player2 = player("O");
+  let currentPlayer = player1;
 
   function gameFlow(e) {
-    if (turn === "X") {
-      gameBoard.mark(Array.from(gameBoard.cells).indexOf(e.target), "X");
-      gameBoard.renderBoard();
-      if (gameBoard.checkWinner()) {
-        for (let i = 0; i < gameBoard.cells.length; i++) {
-          gameBoard.cells[i].removeEventListener("click", gameFlow);
-        }
-      } else {
-        turn = "O";
-        e.target.removeEventListener("click", gameFlow);
+    gameBoard.mark(
+      Array.from(gameBoard.cells).indexOf(e.target),
+      currentPlayer.mark
+    );
+    gameBoard.renderBoard();
+    if (gameBoard.isGameOver() && !gameBoard.checkWinner().isThereWinner) {
+      let resultText = document.createTextNode(`It's a tie!`);
+      result.appendChild(resultText);
+    }
+    if (gameBoard.checkWinner().isThereWinner) {
+      for (let i = 0; i < gameBoard.cells.length; i++) {
+        gameBoard.cells[i].removeEventListener("click", gameFlow);
       }
+      let resultText = document.createTextNode(
+        `Player ${gameBoard.checkWinner().winner} wins!`
+      );
+      result.appendChild(resultText);
     } else {
-      gameBoard.mark(Array.from(gameBoard.cells).indexOf(e.target), "O");
-      gameBoard.renderBoard();
-      if (gameBoard.checkWinner()) {
-        for (let i = 0; i < gameBoard.cells.length; i++) {
-          gameBoard.cells[i].removeEventListener("click", gameFlow);
-        }
-      } else {
-        turn = "X";
-        e.target.removeEventListener("click", gameFlow);
-      }
+      currentPlayer = currentPlayer === player1 ? player2 : player1;
+      e.target.removeEventListener("click", gameFlow);
     }
   }
 
@@ -111,9 +117,14 @@ const gamePlay = ((gameBoard) => {
     }
   }
 
+  function resetGame() {
+    gameBoard.resetBoard();
+    currentPlayer = player1;
+    addEventsToCells();
+    result.removeChild(result.firstChild);
+  }
+
   addEventsToCells();
 
-  document.querySelector(".reset").addEventListener("click", () => {
-    gameBoard.resetBoard(), addEventsToCells();
-  });
+  document.querySelector(".reset").addEventListener("click", resetGame);
 })(gameBoard);
