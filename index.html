@@ -11,14 +11,24 @@
 </head>
 <body>
     <div class="content">
+        <div class="menu">
+            <span>Play against:</span>
+            <button class="human">Human</button>
+            <button class="computer">Computer</button>
+            <span class="forthcoming hidden">Coming soon!</span>
+        </div>
         <div class="header">
-            <button><span class="material-symbols-outlined">
+            <button class="back">
+                <span class="material-symbols-outlined">
                 arrow_back
-                </span></button>
+                </span>
+            </button>
             <h1>Tic Tac Toe</h1>
-            <button class="reset"><span class="material-symbols-outlined">
+            <button class="reset">
+                <span class="material-symbols-outlined">
                 refresh
-                </span></button>
+                </span>
+            </button>
         </div>
         <div class="playground">
             <div class="cell"></div>
@@ -32,6 +42,7 @@
             <div class="cell"></div>
         </div>
         <div class="result"></div>
+        <div class="overlay"></div>
     </div>
 </body>
 </html>

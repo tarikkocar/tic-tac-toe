@@ -127,4 +127,32 @@ const gamePlay = ((gameBoard) => {
   addEventsToCells();
 
   document.querySelector(".reset").addEventListener("click", resetGame);
+
+  return { resetGame };
 })(gameBoard);
+
+const menuHandler = (() => {
+  const menu = document.querySelector(".menu");
+  const overlay = document.querySelector(".overlay");
+  const humanButton = document.querySelector(".human");
+  const computerButton = document.querySelector(".computer");
+  const backButton = document.querySelector(".back");
+  const forthcoming = document.querySelector(".forthcoming");
+
+  humanButton.addEventListener("click", () => {
+    menu.classList.add("hidden");
+    overlay.classList.add("hidden");
+    forthcoming.classList.add("hidden");
+  });
+
+  backButton.addEventListener("click", () => {
+    menu.classList.remove("hidden");
+    overlay.classList.remove("hidden");
+    forthcoming.classList.add("hidden");
+    gamePlay.resetGame();
+  });
+
+  computerButton.addEventListener("click", () => {
+    forthcoming.classList.remove("hidden");
+  });
+})();
