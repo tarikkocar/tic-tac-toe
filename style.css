@@ -1,47 +1,14 @@
 :root {
     --cell-size: 100px;
-    --bg-color: #f5f3e9;
-    --font-color: #0F6292;
+    --bg-color: #434e76;
+    --font-color: #dda8af;
+    --primary-font: 'Montserrat', sans-serif;
+    --border-color: #85586F;
 }
 
 body {
     background-color: var(--bg-color);
-}
-
-.menu {
-    position: absolute;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 30px;
-    top: 150px;
-    font-family: 'Source Sans Pro', sans-serif;
-    font-size: 25px;
-    color: var(--font-color);
-    width: 100vw;
-    height: 100wh;
-    background-color: var(--bg-color);
-    z-index: 2;
-}
-
-.menu button {
-    width: 150px;
-    height: 75px;
-}
-
-.header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    width: 600px;
-    font-family: 'Source Sans Pro', sans-serif;
-    color: var(--font-color);
-}
-
-h1 {
-    z-index: 2;
-    font-size: 50px;
-    margin: 0;
+    font-family: var(--primary-font);
 }
 
 .content {
@@ -51,11 +18,53 @@ h1 {
     margin: 30px;
 }
 
+.menu {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+    top: 150px;
+    font-size: 25px;
+    color: var(--font-color);
+    width: 100vw;
+    height: 100wh;
+    background-color: var(--bg-color);
+    z-index: 2;
+    transition: opacity 0.5s ease-out;
+}
+
+.menu button {
+    width: 150px;
+    height: 75px;
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    color: #dda8af;
+    padding: 8px 16px;
+    text-align: center;
+    font-size: 18px;
+    cursor: pointer;
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 600px;
+    color: var(--font-color);
+}
+
+h1 {
+    z-index: 2;
+    font-size: 50px;
+    margin: 0;
+}
+
 .result {
     width: 320px;
     height: 100px;
     margin: 10px;
-    font-size: 30px;
+    font-size: 25px;
     display: flex;
     align-items: center;
     justify-content: center;
@@ -72,24 +81,47 @@ h1 {
 .cell {
     width: var(--cell-size);
     height: var(--cell-size);
-    border: 2px solid #85586F;
+    border: 2px solid var(--border-color);
     border-radius: 10px;
     display: flex;
     justify-content: center;
     align-items: center;
     font-size: 50px;
-    font-family: sans-serif;
     color: var(--font-color);
+}
+
+.win {
+    background-color: #7e8ab8;
+    transition: background-color 0.5s ease;
 }
 
 button {
     width: 50px;
     height: 50px;
     border-radius: 10px;
+    background-color: transparent;
+    border: 2px solid var(--border-color);
+    color: #dda8af;
+    text-align: center;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: var(--font-color);
+    color: #fff;
+    transition: 0.3s;
+}
+
+button:active {
+    background-color: #f0d6d9;
+    color: #fff;
+    transition: 0.3s;
 }
 
 .hidden, .hidden > * {
-    display: none;
+    opacity: 0;
+    pointer-events: none;
 }
 
 .overlay {
@@ -102,4 +134,5 @@ button {
     height: 100%;
     background-color: var(--bg-color);
     z-index: 1;
+    transition: opacity 0.3s ease-out;
 }

@@ -21,6 +21,7 @@ const gameBoard = (() => {
   function checkWinner() {
     let isThereWinner = false;
     let winner = undefined;
+    let winningCells = [];
     // column check
     for (let i = 0; i < 3; i++) {
       if (
@@ -30,6 +31,7 @@ const gameBoard = (() => {
       ) {
         isThereWinner = true;
         winner = squares[i];
+        winningCells.push(i, i + 3, i + 6);
       }
     }
     // row check
@@ -41,6 +43,7 @@ const gameBoard = (() => {
       ) {
         isThereWinner = true;
         winner = squares[i];
+        winningCells.push(i, i + 1, i + 2);
       }
     }
     // diagonal checks
@@ -51,6 +54,7 @@ const gameBoard = (() => {
     ) {
       isThereWinner = true;
       winner = squares[0];
+      winningCells.push(0, 4, 8);
     }
     if (
       squares[2] !== "" &&
@@ -59,8 +63,9 @@ const gameBoard = (() => {
     ) {
       isThereWinner = true;
       winner = squares[2];
+      winningCells.push(2, 4, 6);
     }
-    return { isThereWinner, winner };
+    return { isThereWinner, winner, winningCells };
   }
 
   function resetBoard() {
@@ -105,6 +110,11 @@ const gamePlay = ((gameBoard) => {
         `Player ${gameBoard.checkWinner().winner} wins!`
       );
       result.appendChild(resultText);
+      for (let i = 0; i < gameBoard.checkWinner().winningCells.length; i++) {
+        gameBoard.cells[gameBoard.checkWinner().winningCells[i]].classList.add(
+          "win"
+        );
+      }
     } else {
       currentPlayer = currentPlayer === player1 ? player2 : player1;
       e.target.removeEventListener("click", gameFlow);
@@ -121,7 +131,10 @@ const gamePlay = ((gameBoard) => {
     gameBoard.resetBoard();
     currentPlayer = player1;
     addEventsToCells();
-    result.removeChild(result.firstChild);
+    if (result.hasChildNodes()) result.removeChild(result.firstChild);
+    for (let i = 0; i < gameBoard.cells.length; i++) {
+      gameBoard.cells[i].classList.remove("win");
+    }
   }
 
   addEventsToCells();
